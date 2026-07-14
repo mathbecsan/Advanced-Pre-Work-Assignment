@@ -1,0 +1,15 @@
+{
+  "name": "star-wars-explorer",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A Star Wars explorer built on SWAPI.tech, showing Films and People with cross-navigation between them.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^8.1.4"
+  }
+}
