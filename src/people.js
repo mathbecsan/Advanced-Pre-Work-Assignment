@@ -130,14 +130,14 @@ async function renderFilmography(personId) {
   const container = document.getElementById("filmography");
   try {
     const films = await getFilms();
-    const personFragment = `/people/${personId}`;
+    const personIdStr = String(personId);
 
     const settled = await Promise.allSettled(
       films.map(async (film) => {
         const uid = film.uid ?? extractId((film.properties ?? film).url);
         const detail = await getFilm(uid);
         const characters = detail.properties.characters ?? [];
-        const appearsIn = characters.some((url) => url.includes(personFragment));
+        const appearsIn = characters.some((url) => extractId(url) === personIdStr);
         return appearsIn
           ? { uid, title: detail.properties.title, episode: detail.properties.episode_id }
           : null;
