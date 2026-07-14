@@ -1,10 +1,5 @@
-// Thin wrapper around SWAPI.tech (https://www.swapi.tech/api) with
-// per-session caching so navigating back and forth between pages doesn't
-// re-fetch data that was already retrieved.
-
 const BASE_URL = "https://www.swapi.tech/api";
 
-/** Fetches a URL as JSON, turning network/HTTP failures into readable errors. */
 async function fetchJSON(url) {
   let response;
   try {
@@ -20,14 +15,12 @@ async function fetchJSON(url) {
   return response.json();
 }
 
-/** Pulls the numeric id out of a SWAPI resource URL, e.g. ".../people/4/" -> "4". */
 export function extractId(url) {
   if (!url) return null;
   const match = url.match(/\/(\d+)\/?$/);
   return match ? match[1] : null;
 }
 
-/** Escapes text pulled from the API before it's dropped into innerHTML. */
 export function escapeHtml(value) {
   const div = document.createElement("div");
   div.textContent = value ?? "";
@@ -43,7 +36,7 @@ function writeCache(key, value) {
   try {
     sessionStorage.setItem(key, JSON.stringify(value));
   } catch {
-    // Storage can fail (private browsing, quota); caching is an optimization, not a requirement.
+    // storage might be full or blocked, whatever, caching is a bonus not a requirement
   }
 }
 
@@ -54,8 +47,6 @@ async function cached(key, loader) {
   writeCache(key, value);
   return value;
 }
-
-// ---- Films ----------------------------------------------------------
 
 export async function getFilms() {
   return cached("films:list", async () => {
@@ -71,9 +62,7 @@ export async function getFilm(id) {
   });
 }
 
-// ---- People -----------------------------------------------------------
-
-/** Fetches one page of the paginated people list. Pass a full "next"/"previous" URL to page. */
+// url can be a full next/previous link from a previous page, or omitted for page 1
 export async function getPeoplePage(url) {
   return fetchJSON(url ?? `${BASE_URL}/people?page=1&limit=12`);
 }
@@ -89,8 +78,6 @@ export async function getPerson(id) {
     return data.result;
   });
 }
-
-// ---- Planets ------------------------------------------------------------
 
 export async function getPlanet(url) {
   const id = extractId(url);

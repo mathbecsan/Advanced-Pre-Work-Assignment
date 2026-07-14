@@ -99,7 +99,7 @@ async function renderPersonDetail(id) {
         const planet = await getPlanet(p.homeworld);
         homeworldName = planet.properties.name;
       } catch {
-        // Homeworld lookup is supplementary; leave it as "Unknown" on failure.
+        // if this fails just leave it as Unknown, not a big deal
       }
     }
 
